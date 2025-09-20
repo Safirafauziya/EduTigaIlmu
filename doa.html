@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag & Drop Doa</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+
+    body {
+      background: #f0f8ff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    header {
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(90deg,#6a11cb,#2575fc);
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .instructions {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      color: #333;
+    }
+
+    .word-pool, .sentence-box {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .word-pool span, .sentence-box span {
+      background: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border: 2px solid #6a11cb;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .word-pool span:hover, .sentence-box span:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.3));
+    }
+
+    /* Tooltip */
+    .word-pool span::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s;
+      z-index: 10;
+    }
+
+    .word-pool span:hover::after {
+      opacity: 1;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      margin: 5px;
+      border:none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn-check { background: #28a745; color:white; }
+    .btn-check:hover { background: #218838; }
+
+    .btn-reset { background: #ffc107; color:white; }
+    .btn-reset:hover { background: #e0a800; }
+
+    .btn-back { background: #6c757d; color:white; }
+    .btn-back:hover { background: #5a6268; }
+
+    .feedback { margin-top: 12px; font-size: 1.2rem; font-weight: bold; min-height: 1.5em; }
+
+    /* Responsif HP */
+    @media (max-width:768px){
+      .word-pool span, .sentence-box span { font-size:1rem; padding:10px 15px; }
+      .btn { padding:10px 18px; font-size:0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>🕌 Drag & Drop Doa</header>
+
+  <p class="instructions">Susun kata-kata doa agar menjadi benar!</p>
+
+  <div class="word-pool" id="wordPool"></div>
+  <div class="sentence-box" id="sentenceBox"></div>
+
+  <div>
+    <button id="checkBtn" class="btn btn-check">✅ Cek Jawaban</button>
+    <button id="resetBtn" class="btn btn-reset">🔄 Reset</button>
+    <button id="backBtn" class="btn btn-back">⬅ Kembali</button>
+  </div>
+
+  <p class="feedback" id="feedback"></p>
+
+  <script>
+    const questions = [
+  {words:["Allahumma","inni","as'aluka","al-huda"], answer:"Allahumma inni as'aluka al-huda", tooltip:["Ya Allah","sesungguhnya aku","memohon kepada-Mu","petunjuk"]},
+  {words:["Subhanaka","Allahumma","wa","bihamdika"], answer:"Subhanaka Allahumma wa bihamdika", tooltip:["Maha Suci Engkau","Ya Allah","dan","segala pujian bagi-Mu"]},
+  {words:["Bismillahir","rahmanir","rahim"], answer:"Bismillahir rahmanir rahim", tooltip:["Dengan nama Allah","Yang Maha Pengasih","Yang Maha Penyayang"]},
+  {words:["Rabbana","atina","fid-dunya","hasanah"], answer:"Rabbana atina fid-dunya hasanah", tooltip:["Tuhan kami","berikanlah kepada kami","di dunia","kebaikan"]},
+  {words:["Rabbana","ghfir","lana","warhamna"], answer:"Rabbana ghfir lana warhamna", tooltip:["Tuhan kami","ampunilah","kami","dan rahmatilah kami"]},
+  {words:["Allahu","akbar"], answer:"Allahu akbar", tooltip:["Allah","Maha Besar"]},
+  {words:["La","ilaha","illallah"], answer:"La ilaha illallah", tooltip:["Tiada tuhan","selain Allah"]}
+];
+
+
+    let currentQuestion = 0;
+    let userSentence = [];
+
+    const wordPool = document.getElementById("wordPool");
+    const sentenceBox = document.getElementById("sentenceBox");
+    const feedback = document.getElementById("feedback");
+
+    function loadQuestion(){
+      userSentence = [];
+      sentenceBox.innerHTML = "";
+      feedback.textContent = "";
+
+      const q = questions[currentQuestion];
+      const shuffled = q.words.map((w,i)=>({word:w,tooltip:q.tooltip[i]})).sort(()=>Math.random()-0.5);
+
+      wordPool.innerHTML = "";
+      shuffled.forEach(obj=>{
+        const span = document.createElement("span");
+        span.textContent = obj.word;
+        span.setAttribute("data-tooltip", obj.tooltip);
+        span.addEventListener("click", ()=> selectWord(obj.word, span));
+        wordPool.appendChild(span);
+      });
+    }
+
+    function selectWord(word, span){
+      userSentence.push(word);
+      const spanClone = document.createElement("span");
+      spanClone.textContent = word;
+      spanClone.addEventListener("click", ()=> removeWord(spanClone, word));
+      sentenceBox.appendChild(spanClone);
+    }
+
+    function removeWord(span, word){
+      sentenceBox.removeChild(span);
+      const index = userSentence.indexOf(word);
+      if(index>-1) userSentence.splice(index,1);
+    }
+
+    document.getElementById("checkBtn").addEventListener("click", ()=>{
+      const userAns = userSentence.join(" ");
+      if(userAns === questions[currentQuestion].answer){
+        feedback.textContent = "🎉 Benar! 🎉";
+        feedback.style.color = "#28a745";
+        setTimeout(()=>{
+          currentQuestion = (currentQuestion+1)%questions.length;
+          loadQuestion();
+        },1000);
+      } else {
+        feedback.textContent = "❌ Coba lagi!";
+        feedback.style.color = "#ff3d00";
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", loadQuestion);
+    document.getElementById("backBtn").addEventListener("click", ()=>{ window.history.back(); });
+
+    // Inisialisasi
+    loadQuestion();
+  </script>
+
+</body>
+</html>

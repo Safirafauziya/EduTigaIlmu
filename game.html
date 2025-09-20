@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Bahasa Arab</title>
+<style>
+body {
+  font-family: "Poppins", sans-serif;
+  margin:0; padding:0;
+  background: linear-gradient(135deg,#6a11cb,#2575fc);
+  color:#fff;
+  text-align:center;
+}
+
+header {
+  background: rgba(0,0,0,0.2);
+  padding:20px;
+  font-size:1.6em;
+  font-weight:bold;
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  border-bottom:2px solid rgba(255,255,255,0.3);
+}
+
+.game-container{
+  max-width:600px;
+  margin:30px auto;
+  background: rgba(255,255,255,0.05);
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+}
+
+.status{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:15px;
+  font-weight:bold;
+  font-size:1.1em;
+  flex-wrap:wrap;
+}
+
+h2{
+  margin:15px 0;
+  font-size:1.3em;
+}
+
+.choices{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  margin-top:20px;
+}
+
+.choice-btn{
+  padding:15px;
+  border:none;
+  border-radius:15px;
+  background: #ffc107;
+  color:#000;
+  font-weight:bold;
+  font-size:1em;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.choice-btn:hover{ background:#e0a800; }
+
+.choice-btn.correct{ background:rgba(0,255,0,0.7); color:#fff; }
+.choice-btn.wrong{ background:rgba(255,0,0,0.7); color:#fff; }
+
+button#nextBtn{
+  margin-top:20px;
+  padding:12px 25px;
+  border:none;
+  background:#28a745;
+  border-radius:25px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:1em;
+}
+
+button#nextBtn:hover{ background:#218838; }
+
+.back-link{
+  display:inline-block;
+  margin-top:20px;
+  text-decoration:none;
+  color:#fff;
+  background:#007bff;
+  padding:14px 28px;
+  border-radius:30px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.back-link:hover{ background:#0056b3; }
+
+@media(max-width:600px){
+  .status{flex-direction:column; align-items:center;}
+  .choice-btn{font-size:0.9em;}
+}
+</style>
+</head>
+<body>
+
+<header>📝 Quiz Bahasa Arab</header>
+
+<div class="game-container">
+  <div class="status">
+    <div>⏳ Waktu: <span id="timer">60</span> detik</div>
+    <div>⭐ Skor: <span id="score">0</span></div>
+  </div>
+
+  <h2 id="question">Pertanyaan akan muncul di sini</h2>
+  <div class="choices" id="choices"></div>
+
+  <button id="nextBtn" style="display:none;">➡ Pertanyaan Berikutnya</button>
+
+  <a href="arabic_game.html" class="back-link">⬅ Kembali ke Menu Game</a>
+</div>
+
+<script>
+const quizData = [
+  {q:"Apa arti kata 🐶 dalam bahasa Arab?", options:["قطة (Kucing)","كلب (Anjing)","عصفور (Burung)","سمك (Ikan)"], answer:1},
+  {q:"Apa arti كلمة 📖 dalam bahasa Arab?", options:["طاولة (Meja)","كتاب (Buku)","كرسي (Kursi)","حقيبة (Tas)"], answer:1},
+  {q:"Huruf apa yang menunjukkan jamak dalam bahasa Arab?", options:["مفرد","جمع","مؤنث","مذكر"], answer:1},
+  {q:"Apa arti fi’il (فعل) dalam bahasa Arab?", options:["Kata benda","Kata kerja","Kata sifat","Kata keterangan"], answer:1},
+  {q:"Apa arti اسم (Isim)?", options:["Kata benda","Kata kerja","Kata sifat","Kata keterangan"], answer:0},
+  {q:"Apa arti 🏫 dalam bahasa Arab?", options:["مدرسة (Sekolah)","منزل (Rumah)","سوق (Pasar)","مكتب (Kantor)"], answer:0},
+  {q:"Apa arti 😀 dalam bahasa Arab?", options:["حزين (Sedih)","سعيد (Senang)","غاضب (Marah)","مندهش (Kaget)"], answer:1}
+];
+
+let currentIndex = 0;
+let score = 0;
+let timeLeft = 60;
+let timer;
+
+function startTimer(){
+  clearInterval(timer);
+  timer = setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timer').innerText = timeLeft;
+    if(timeLeft <=0){
+      clearInterval(timer);
+      alert("⏳ Waktu habis! Skor kamu: "+score);
+      resetQuiz();
+    }
+  },1000);
+}
+
+function showQuestion(){
+  document.getElementById('nextBtn').style.display = 'none';
+  const q = quizData[currentIndex];
+  document.getElementById('question').innerText = q.q;
+  const choicesDiv = document.getElementById('choices');
+  choicesDiv.innerHTML = '';
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className='choice-btn';
+    btn.innerText=opt;
+    btn.onclick=()=>selectAnswer(i,btn);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(i,btn){
+  const correctIndex = quizData[currentIndex].answer;
+  if(i===correctIndex){
+    btn.classList.add('correct');
+    score+=10;
+    document.getElementById('score').innerText=score;
+  } else {
+    btn.classList.add('wrong');
+    const buttons = document.querySelectorAll('.choice-btn');
+    buttons[correctIndex].classList.add('correct');
+  }
+  Array.from(document.querySelectorAll('.choice-btn')).forEach(b=>b.disabled=true);
+  document.getElementById('nextBtn').style.display='inline-block';
+}
+
+document.getElementById('nextBtn').onclick=()=>{
+  currentIndex++;
+  if(currentIndex>=quizData.length){
+    clearInterval(timer);
+    alert("🎉 Quiz selesai! Skor akhir: "+score);
+    resetQuiz();
+  } else showQuestion();
+};
+
+function resetQuiz(){
+  currentIndex=0;
+  score=0;
+  timeLeft=60;
+  document.getElementById('score').innerText=score;
+  document.getElementById('timer').innerText=timeLeft;
+  startTimer();
+  showQuestion();
+}
+
+startTimer();
+showQuestion();
+</script>
+
+</body>
+</html>

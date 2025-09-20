@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Pembelajaran Bahasa Arab - Media Ajar</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .video-card {
+      flex: 1 1 calc(50% - 40px); /* 2 video per baris */
+      max-width: 500px;
+      background: #fff8e1;
+      border: 2px solid #f4c542;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .video-card h3 {
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      color: #8e5c00;
+    }
+
+    .video-card iframe {
+      width: 100%;
+      height: 250px; /* lebih kecil biar muat 2 sejajar */
+      border-radius: 10px;
+    }
+
+    .back-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #ffd54f;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .back-btn:hover {
+      background: #ffca28;
+    }
+
+    .motivation {
+      background: #ffecb3;
+      padding: 14px;
+      margin: 0;
+      border-top: 2px dashed #fbc02d;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.05em;
+      color: #5d4037;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Video Pembelajaran Bahasa Arab</h1>
+    <p>Silahkan tonton video berikut untuk memahami lebih dalam. 🎬</p>
+  </header>
+
+  <main>
+    <div class="video-card">
+      <h3>Perkenalan dalam Bahasa Arab Lengkap - Taaruf Animasi</h3>
+      <iframe src="https://www.youtube.com/embed/sAgFhhFYaEU"
+              title="Perkenalan dalam Bahasa Arab Lengkap - Taaruf Animasi"
+              frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="video-card">
+      <h3>Percakapan Bahasa Arab Perkenalan - Kartun</h3>
+      <iframe src="https://www.youtube.com/embed/BSmsjJGUw0A"
+              title="Percakapan Bahasa Arab Perkenalan - Kartun"
+              frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="video-card">
+      <h3>Perkenalan Diri Bahasa Arab Kartun - التعريف بالنفس</h3>
+      <iframe src="https://www.youtube.com/embed/-KCEKx7nw2g"
+              title="Perkenalan Diri Bahasa Arab Kartun - التعريف بالنفس"
+              frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="video-card">
+      <h3>Belajar Bahasa Arab untuk Anak - Tema “Diri Sendiri”</h3>
+      <iframe src="https://www.youtube.com/embed/OcqWS7WHiSU"
+              title="Belajar Bahasa Arab untuk Anak - Tema “Diri Sendiri”"
+              frameborder="0" allowfullscreen></iframe>
+    </div>
+  </main>
+
+  <button class="back-btn" onclick="window.location.href='arabic.html'">⬅ Kembali</button>
+
+  <section class="motivation">
+    🌟 Dengan video, belajar jadi lebih hidup dan mudah diingat. Teruslah bersemangat! 🌟
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Media Ajar SD | Belajar Asyik untuk Anak Hebat</p>
+  </footer>
+</body>
+</html>

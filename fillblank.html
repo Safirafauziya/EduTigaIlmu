@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fill in the Blank - English Game</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      color: white;
+      padding: 15px;
+      font-size: 1.5em;
+      font-weight: bold;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    }
+
+    .game-container {
+      max-width: 900px;
+      margin: 25px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+
+    .question {
+      margin: 15px 0;
+      padding: 15px;
+      background: #f1f9ff;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .question p {
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    button {
+      margin: 10px 8px;
+      padding: 10px 20px;
+      border: none;
+      background: #ffc107;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #e0a800;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #fff;
+      background: #007bff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .back-link:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    footer {
+      background:#343a40; 
+      color:white; 
+      padding:10px; 
+      margin-top:30px;
+      font-size: 0.9em;
+    }
+
+    /* 🔹 Responsif untuk HP */
+    @media (max-width: 600px) {
+      header {
+        font-size: 1.2em;
+        padding: 12px;
+      }
+
+      .game-container {
+        margin: 15px;
+        padding: 15px;
+      }
+
+      .question p {
+        font-size: 1em;
+      }
+
+      button {
+        width: 100%;
+        margin: 6px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>✏️ Fill in the Blank Game</header>
+
+  <div class="game-container">
+    <h2>Isi titik-titik dengan jawaban yang benar</h2>
+
+    <form id="quizForm"></form>
+
+    <div>
+      <button type="button" onclick="checkAnswers()">Kirim Jawaban</button>
+      <button type="button" onclick="resetGame()">🔄 Mulai Ulang</button>
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <a href="inggris_game.html" class="back-link">⬅ Kembali ke Menu Game</a>
+  </div>
+
+  <footer>
+    © 2025 Media Belajar SDN Dungkek III
+  </footer>
+
+  <script>
+    const questions = [
+      {
+        text: "She ___ to school every day. (Present Simple)",
+        options: ["go", "goes", "going"],
+        answer: "goes"
+      },
+      {
+        text: "They are ___ football now. (Present Continuous)",
+        options: ["play", "playing", "played"],
+        answer: "playing"
+      },
+      {
+        text: "The cat is very ___. (Adjective)",
+        options: ["quick", "quickly", "quicker"],
+        answer: "quick"
+      },
+      {
+        text: "Yesterday, I ___ a new book. (Past Tense)",
+        options: ["buy", "bought", "buys"],
+        answer: "bought"
+      },
+      {
+        text: "She is my friend ___ I like her. (Conjunction)",
+        options: ["because", "but", "and"],
+        answer: "because"
+      },
+      {
+        text: "We ___ dinner at 7 p.m. yesterday. (Past Tense)",
+        options: ["eat", "ate", "eaten"],
+        answer: "ate"
+      },
+      {
+        text: "I ___ reading when you called me. (Past Continuous)",
+        options: ["am", "was", "were"],
+        answer: "was"
+      },
+      {
+        text: "This is the ___ movie I have ever seen. (Superlative)",
+        options: ["good", "better", "best"],
+        answer: "best"
+      }
+    ];
+
+    let selectedQuestions = [];
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function loadQuiz() {
+      const quizForm = document.getElementById("quizForm");
+      quizForm.innerHTML = "";
+      document.getElementById("result").innerHTML = "";
+
+      // Ambil 5 soal acak
+      selectedQuestions = shuffle([...questions]).slice(0, 5);
+
+      selectedQuestions.forEach((q, index) => {
+        const div = document.createElement("div");
+        div.className = "question";
+        div.innerHTML = `
+          <p>${index + 1}. ${q.text}</p>
+          ${q.options.map(opt => `
+            <label>
+              <input type="radio" name="q${index}" value="${opt}"> ${opt}
+            </label>
+          `).join("")}
+        `;
+        quizForm.appendChild(div);
+      });
+    }
+
+    function checkAnswers() {
+      let score = 0;
+
+      selectedQuestions.forEach((q, i) => {
+        const answer = document.querySelector(`input[name="q${i}"]:checked`)?.value;
+        if (answer === q.answer) score++;
+      });
+
+      let result = document.getElementById("result");
+      result.innerHTML = `✅ Skor kamu: ${score}/${selectedQuestions.length}`;
+
+      if (score === selectedQuestions.length) {
+        result.innerHTML += "<br>🎉 Hebat! Semua jawaban benar!";
+      } else if (score >= 3) {
+        result.innerHTML += "<br>👍 Bagus! Tinggal sedikit lagi sempurna!";
+      } else {
+        result.innerHTML += "<br>😅 Belajar lagi ya, semangat!";
+      }
+    }
+
+    function resetGame() {
+      loadQuiz();
+    }
+
+    // Jalankan saat pertama kali dibuka
+    window.onload = loadQuiz;
+  </script>
+
+</body>
+</html>

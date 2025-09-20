@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Shalat – Rukun & Sunah</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif;}
+    body {
+      background: #e3f2fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 25px 20px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+    }
+    h1 {margin-bottom: 15px; color:#007bff;}
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap: 10px;
+    }
+    button {
+      padding: 12px 25px;
+      margin: 10px;
+      border:none;
+      border-radius: 12px;
+      cursor:pointer;
+      font-size: 1rem;
+      font-weight:bold;
+      transition: 0.3s;
+    }
+    .rukun {background:#28a745; color:white;}
+    .rukun:hover {background:#218838;}
+    .sunah {background:#ffc107;}
+    .sunah:hover {background:#e0a800;}
+    .feedback {
+      margin-top: 15px;
+      font-weight:bold;
+      min-height: 1.5em;
+    }
+    .score-timer {
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:15px;
+      font-weight:bold;
+    }
+    .back-btn {
+      margin-top: 15px;
+      display:inline-block;
+      padding:10px 20px;
+      border-radius: 12px;
+      text-decoration:none;
+      background:#607d8b;
+      color:white;
+      transition:0.3s;
+    }
+    .back-btn:hover {background:#455a64;}
+    @media(max-width:480px){
+      .question {flex-direction:column;}
+      button {width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🕌 Quiz Shalat 🕌</h1>
+    <div class="score-timer">
+      <div>Skor: <span id="score">0</span></div>
+      <div>⏱ Waktu: <span id="timer">15</span>s</div>
+    </div>
+    <div class="question" id="question">
+      <!-- Emoji & pertanyaan muncul di sini -->
+    </div>
+    <div>
+      <button class="rukun" id="rukunBtn">Rukun</button>
+      <button class="sunah" id="sunahBtn">Sunah</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <a href="fikih_game.html" class="back-btn">⬅ Kembali ke Menu Game</a>
+  </div>
+
+  <script>
+    const questions = [
+  {emoji:"🙇‍♂️", text:"Ruku'", answer:"Rukun"},
+  {emoji:"🙏", text:"Tasyahud Awal", answer:"Sunah"},
+  {emoji:"🧎‍♂️", text:"Sujud", answer:"Rukun"},
+  {emoji:"🕌", text:"Takbiratul Ihram", answer:"Rukun"},
+  {emoji:"✋", text:"Mengangkat tangan saat takbir", answer:"Sunah"},
+  {emoji:"📖", text:"Membaca doa Iftitah", answer:"Sunah"},
+  {emoji:"🧎‍♀️", text:"Tasyahud Akhir", answer:"Rukun"},
+  {emoji:"👣", text:"Membuka jari-jari kaki saat sujud", answer:"Sunah"},
+  {emoji:"👐", text:"Membaca doa qunut", answer:"Sunah"},
+  {emoji:"🙆‍♂️", text:"Membaca takbir saat sujud", answer:"Sunah"},
+  {emoji:"🛐", text:"Membaca Al-Fatihah", answer:"Rukun"},
+  {emoji:"🧎‍♂️", text:"Duduk di antara dua sujud", answer:"Rukun"},
+  {emoji:"👀", text:"Melihat ke arah tempat sujud saat shalat", answer:"Sunah"},
+  {emoji:"🙏", text:"Tertib (urutan gerakan) dalam shalat", answer:"Rukun"}
+];
+
+    let current = 0;
+    let score = 0;
+    let timeLeft = 15;
+    let timerInterval;
+
+    const questionEl = document.getElementById("question");
+    const scoreEl = document.getElementById("score");
+    const timerEl = document.getElementById("timer");
+    const feedbackEl = document.getElementById("feedback");
+    const rukunBtn = document.getElementById("rukunBtn");
+    const sunahBtn = document.getElementById("sunahBtn");
+
+    function loadQuestion(){
+      const q = questions[current];
+      questionEl.innerHTML = `<span style="font-size:2rem;">${q.emoji}</span> ${q.text}`;
+      feedbackEl.textContent = "";
+      timeLeft = 15;
+      timerEl.textContent = timeLeft;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(()=>{
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if(timeLeft<=0){
+          clearInterval(timerInterval);
+          feedbackEl.textContent = "⏰ Waktu habis!";
+          nextQuestion();
+        }
+      },1000);
+    }
+
+    function checkAnswer(ans){
+      clearInterval(timerInterval);
+      const correct = questions[current].answer;
+      if(ans === correct){
+        feedbackEl.textContent = "✅ Benar!";
+        feedbackEl.style.color = "#28a745";
+        score += 10;
+        scoreEl.textContent = score;
+      } else {
+        feedbackEl.textContent = `❌ Salah! Jawaban benar: ${correct}`;
+        feedbackEl.style.color = "#ff3d00";
+      }
+      setTimeout(nextQuestion,1000);
+    }
+
+    function nextQuestion(){
+      current = (current +1)%questions.length;
+      loadQuestion();
+    }
+
+    rukunBtn.addEventListener("click",()=>checkAnswer("Rukun"));
+    sunahBtn.addEventListener("click",()=>checkAnswer("Sunah"));
+
+    loadQuestion();
+  </script>
+</body>
+</html>

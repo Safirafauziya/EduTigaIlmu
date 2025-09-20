@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teori Bahasa Inggris</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: #f0f8ff;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2196F3, #64B5F6);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    main {
+      flex: 1;
+      padding: 30px 20px;
+      max-width: 1000px;
+      margin: auto;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #333;
+      font-size: 1.5em;
+    }
+
+    .materi {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      text-align: left;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #2196F3;
+      font-size: 1.2em;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    .back-btn {
+      padding: 10px 25px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: #FFD54F;
+      color: #333;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 20px auto 0;
+      display: block;
+      width: fit-content;
+    }
+
+    .back-btn:hover {
+      background: #FFC107;
+      transform: scale(1.05);
+    }
+
+    .motivasi {
+      background: #FFF3CD;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-style: italic;
+      color: #555;
+    }
+
+    footer {
+      background: #2196F3;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      margin-top: auto;
+      font-size: 0.9em;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    📖 Teori Bahasa Inggris
+    <div style="font-size: 0.6em; font-weight: normal;">Belajar mudah & menyenangkan</div>
+  </header>
+
+  <main>
+    <h2>Materi Teori Bahasa Inggris</h2>
+    <div class="materi">
+      <div class="card">
+        <h3>Salam dan Sapaan</h3>
+        <p>Pelajari berbagai salam dan sapaan dalam bahasa Inggris:<br>
+        - Hello / Hi (Halo)<br>
+        - Good morning / Good afternoon / Good evening (Selamat pagi/siang/malam)<br>
+        - How are you? / I'm fine, thank you. (Apa kabar? / Baik, terima kasih)<br>
+        - Goodbye / See you / Take care (Selamat tinggal / Sampai jumpa / Jaga diri)</p>
+      </div>
+      <div class="card">
+        <h3>The Eight Parts of Speech</h3>
+        <p>Pelajari 8 jenis kata dalam bahasa Inggris beserta contohnya:<br>
+        1. Noun (Kata benda): cat, school, book<br>
+        2. Pronoun (Kata ganti): he, she, it<br>
+        3. Verb (Kata kerja): eat, run, study<br>
+        4. Adjective (Kata sifat): beautiful, big, fast<br>
+        5. Adverb (Kata keterangan): quickly, very, well<br>
+        6. Preposition (Kata depan): in, on, at<br>
+        7. Conjunction (Kata penghubung): and, but, because<br>
+        8. Interjection (Seru): wow!, oh!, hey!</p>
+      </div>
+      <div class="card">
+        <h3>Contoh Dialog Salam</h3>
+        <p>Dialog sederhana:<br>
+        A: Hello! How are you?<br>
+        B: Hi! I'm fine, thank you. And you?<br>
+        A: I'm good too. See you later!<br>
+        B: Goodbye!</p>
+      </div>
+      <div class="card">
+        <h3>Latihan Percakapan</h3>
+        <p>Latihlah sapaan dan perkenalan:<br>
+        - Introduce yourself: My name is Sarah. What's your name?<br>
+        - Menanyakan kabar: How are you today?<br>
+        - Mengucapkan selamat tinggal: See you tomorrow / Take care!</p>
+      </div>
+    </div>
+
+    <!-- Tombol kembali -->
+    <button class="back-btn" onclick="window.location.href='inggris.html'">⬅ Kembali</button>
+
+    <!-- Motivasi -->
+    <div class="motivasi">
+      🌟 "Practice makes perfect! Teruslah berlatih, sedikit demi sedikit akan semakin mahir." 🌟
+    </div>
+  </main>
+
+  <footer>
+    © 2025 Media Ajar SD | Bahasa Inggris - Belajar Bersama, Tumbuh Bersama 🌱
+  </footer>
+</body>
+</html>

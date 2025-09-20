@@ -1,0 +1,129 @@
+/* Reset dasar */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  background: #f8fbff;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background: linear-gradient(90deg, #4cafef, #42a5f5);
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Sapaan */
+.welcome {
+  padding: 2rem;
+  text-align: center;
+}
+
+.welcome h2 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+/* Menu */
+.menu {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+.card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card h3 {
+  margin: 0.5rem 0;
+  color: #1976d2;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.05);
+  background: #e3f2fd;
+}
+
+/* Motivasi */
+.motivation {
+  text-align: center;
+  padding: 1.5rem;
+  background: #fff9c4;
+  margin: 1rem;
+  border-radius: 12px;
+  font-style: italic;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.motivation h3 {
+  color: #f57c00;
+  margin-bottom: 0.5rem;
+}
+
+/* Footer sticky */
+footer {
+  background: #42a5f5;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.back-btn {
+  padding: 10px 25px;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  background: #FFD54F;   /* kuning cerah */
+  color: #333;
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 20px auto 0;   /* auto untuk center horizontal */
+  display: block;        /* block tapi width auto */
+  width: fit-content;    /* supaya ukurannya sesuai teks */
+}
+
+.back-btn:hover {
+  background: #FFC107;   /* kuning lebih gelap */
+  transform: scale(1.05);
+}
+
+
+

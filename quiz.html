@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Bahasa Arab</title>
+<style>
+body {
+  font-family: "Poppins", sans-serif;
+  margin:0; padding:0;
+  background: linear-gradient(135deg,#6a11cb,#2575fc);
+  color:#fff;
+  text-align:center;
+}
+
+header {
+  background: rgba(0,0,0,0.2);
+  padding: 20px; font-size:1.6em; font-weight:bold;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  border-bottom: 2px solid rgba(255,255,255,0.3);
+}
+
+.game-container {
+  max-width:600px;
+  margin: 30px auto;
+  background: rgba(255,255,255,0.05);
+  padding:20px;
+  border-radius:20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+}
+
+.status {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:15px;
+  font-weight:bold;
+  font-size:1.1em;
+  flex-wrap:wrap;
+}
+
+#question {
+  font-size:2em;
+  font-weight:bold;
+  padding:20px;
+  margin-bottom:20px;
+  background: rgba(255,255,255,0.1);
+  border-radius:15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s;
+}
+
+#question:hover {
+  transform: scale(1.05);
+}
+
+.card {
+  background: rgba(0,0,0,0.2);
+  color:#fff;
+  padding:20px;
+  border-radius:15px;
+  margin:10px 0;
+  cursor:pointer;
+  font-size:1.3em;
+  font-weight:bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.card:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.2);
+}
+
+.card.correct { background: #28a745; color:#fff; box-shadow: 0 4px 20px #28a745; }
+.card.wrong { background: #dc3545; color:#fff; box-shadow: 0 4px 20px #dc3545; }
+
+button {
+  margin:10px;
+  padding:12px 25px;
+  border:none;
+  background:#ffc107;
+  border-radius:30px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:1em;
+  transition:0.3s;
+}
+
+button:hover { background:#e0a800; }
+
+.back-link {
+  display:inline-block;
+  margin-top:20px;
+  text-decoration:none;
+  color:#fff;
+  background:#007bff;
+  padding:14px 28px;
+  border-radius:30px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.back-link:hover { background:#0056b3; }
+
+@media(max-width:600px){
+  .game-container{margin:15px; padding:15px;}
+  #question{font-size:1.6em; padding:15px;}
+  .card{font-size:1em; padding:15px;}
+  button{width:100%; margin:5px 0;}
+  .status{flex-direction:column; align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<header>🎓 Quiz Bahasa Arab</header>
+
+<div class="game-container">
+  <div class="status">
+    <div>⏳ Waktu: <span id="timer">60</span> detik</div>
+    <div>⭐ Skor: <span id="score">0</span></div>
+  </div>
+
+  <div id="question">...</div>
+  <div id="choices"></div>
+  <a href="arabic_game.html" class="back-link">⬅ Kembali ke Menu Game</a>
+</div>
+
+<script>
+const quizData = [
+  {q:'كَلْب ', choices:['Anjing','Kucing','Burung'], ans:0},
+  {q:'قِط ', choices:['Ayam','Kucing','Ikan'], ans:1},
+  {q:'سَمَك ', choices:['Ikan','Kelinci','Kuda'], ans:0},
+  {q:'شَمْس ', choices:['Bulan','Matahari','Bintang'], ans:1},
+  {q:'قَمَر ', choices:['Bulan','Matahari','Awan'], ans:0},
+  {q:'طِفْل ', choices:['Anak','Orang tua','Guru'], ans:0},
+  {q:'مَاء ', choices:['Air','Api','Tanah'], ans:0},
+  {q:'سَعِيد ', choices:['Sedih','Senang','Marah'], ans:1},
+];
+
+let score = 0;
+let current = 0;
+let timeLeft = 60;
+let timer;
+
+function startTimer(){
+  document.getElementById('timer').innerText = timeLeft;
+  timer = setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timer').innerText = timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      alert('⏳ Waktu habis! Skor kamu: '+score);
+      current = 0; score=0; timeLeft=60; loadQuestion();
+    }
+  },1000);
+}
+
+function loadQuestion(){
+  if(current >= quizData.length){
+    clearInterval(timer);
+    alert('🎉 Quiz selesai! Skor akhir: '+score);
+    current = 0; score=0; timeLeft=60;
+    loadQuestion(); startTimer();
+    return;
+  }
+
+  const q = quizData[current];
+  document.getElementById('question').innerText = q.q;
+
+  const choicesDiv = document.getElementById('choices');
+  choicesDiv.innerHTML='';
+  q.choices.forEach((c,i)=>{
+    const btn = document.createElement('div');
+    btn.className='card';
+    btn.innerText = c;
+    btn.onclick = ()=>{
+      if(i===q.ans){ btn.classList.add('correct'); score+=10; }
+      else{ btn.classList.add('wrong'); }
+      document.getElementById('score').innerText = score;
+      setTimeout(()=>{ current++; loadQuestion(); },600);
+    };
+    choicesDiv.appendChild(btn);
+  });
+}
+
+startTimer();
+loadQuestion();
+</script>
+
+</body>
+</html>

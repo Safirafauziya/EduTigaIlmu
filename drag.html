@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Wudhu’ Drag & Drop</title>
+<style>
+  body { font-family:"Poppins",sans-serif; background:#e3f2fd; text-align:center; margin:0; padding:0; }
+  header { background: linear-gradient(90deg,#4fc3f7,#0288d1); color:white; padding:15px; font-size:1.5rem; font-weight:bold; }
+  .game-container { padding:20px; max-width:800px; margin:auto; }
+  .pool, .drop { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin-bottom:20px; }
+  .card { background:white; padding:20px; border-radius:12px; cursor:pointer; box-shadow:0 3px 6px rgba(0,0,0,0.2); transition:0.2s; font-size:2rem; position:relative; }
+  .card:hover { transform:scale(1.1); }
+  .tooltip { position:absolute; bottom:110%; left:50%; transform:translateX(-50%); background:#0288d1; color:white; padding:5px 10px; border-radius:8px; font-size:1rem; white-space:nowrap; display:none; z-index:10; }
+  .tooltip::after { content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%); border-width:5px; border-style:solid; border-color:#0288d1 transparent transparent transparent; }
+  .card:hover .tooltip { display:block; }
+  .drop-box { min-width:60px; min-height:60px; background:#b3e5fc; border-radius:10px; display:flex; align-items:center; justify-content:center; transition:0.2s; font-size:2rem; }
+  .drop-box.correct { background:#a5d6a7; }
+  .drop-box.wrong { background:#ef9a9a; }
+  .btn { padding:10px 20px; margin:5px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; transition:0.3s; }
+  .btn:hover { opacity:0.8; }
+  .check { background:#4caf50; color:white; }
+  .reset { background:#ff9800; color:white; }
+  .back { background:#607d8b; color:white; }
+  #feedback { font-size:1.2rem; font-weight:bold; min-height:1.5em; margin-top:10px; }
+  @media(max-width:600px){ .card, .drop-box{font-size:1.5rem; padding:15px;} }
+</style>
+</head>
+<body>
+
+<header>🕌 Game Wudhu’ Drag & Drop 🕌</header>
+<div class="game-container">
+  <p>Susun langkah wudhu' dari awal hingga akhir dengan benar!</p>
+  <div class="pool" id="pool"></div>
+  <div class="drop" id="drop"></div>
+
+  <div>
+    <button id="checkBtn" class="btn check">✅ Cek Jawaban</button>
+    <button id="resetBtn" class="btn reset">🔄 Reset</button>
+    <button id="backBtn" class="btn back">⬅ Kembali</button>
+  </div>
+
+  <p id="feedback"></p>
+</div>
+
+<script>
+const wudhuSteps = [
+  {emoji:"📖", name:"Baca basmalah"},
+  {emoji:"🖐", name:"Membasuh tangan hingga pergelangan"},
+  {emoji:"👄", name:"Berkumur-kumur 3x"},
+  {emoji:"👃", name:"Menghirup air ke hidung 3x"},
+  {emoji:"👤", name:"Niat Wudhu' bersamaan cuci muka 3x"},
+  {emoji:"🖐", name:"Membasuh tangan hingga siku 3x"},
+  {emoji:"🧕", name:"Mengusap sebagian kepala 3x"},
+  {emoji:"👂", name:"Mengusap telinga 3x"},
+  {emoji:"🦶", name:"Membasuh kaki kanan & kiri 3x"},
+  {emoji:"🙏", name:"Doa setelah wudhu'"}
+];
+
+const pool = document.getElementById("pool");
+const drop = document.getElementById("drop");
+const feedback = document.getElementById("feedback");
+
+let selectedSteps = [];
+
+function initGame(){
+  pool.innerHTML = "";
+  drop.innerHTML = "";
+  feedback.textContent = "";
+  selectedSteps = [];
+
+  // shuffle pool
+  let shuffled = [...wudhuSteps].sort(()=>Math.random()-0.5);
+  shuffled.forEach((step,index)=>{
+    const card = document.createElement("div");
+    card.className="card";
+    card.dataset.index = wudhuSteps.indexOf(step);
+    card.textContent = step.emoji;
+
+    // tooltip muncul hanya saat hover di pool
+    const tooltip = document.createElement("div");
+    tooltip.className="tooltip";
+    tooltip.textContent = step.name;
+    card.appendChild(tooltip);
+
+    card.addEventListener("click", ()=>{
+      addToDrop(card);
+    });
+
+    pool.appendChild(card);
+  });
+
+  // buat drop boxes (emoji saja)
+  for(let i=0;i<wudhuSteps.length;i++){
+    const box = document.createElement("div");
+    box.className="drop-box";
+    box.dataset.selected = "";
+    drop.appendChild(box);
+  }
+}
+
+function addToDrop(card){
+  const boxes = document.querySelectorAll(".drop-box");
+  for(let box of boxes){
+    if(box.dataset.selected===""){
+      box.dataset.selected = card.dataset.index;
+      box.textContent = card.textContent; // hanya emoji
+      selectedSteps.push(parseInt(card.dataset.index));
+      card.style.visibility="hidden";
+      break;
+    }
+  }
+}
+
+// Reset game
+document.getElementById("resetBtn").addEventListener("click", initGame);
+
+// Cek jawaban
+document.getElementById("checkBtn").addEventListener("click", ()=>{
+  const boxes = document.querySelectorAll(".drop-box");
+  let correct=true;
+  boxes.forEach((box,i)=>{
+    if(parseInt(box.dataset.selected)!==i){
+      correct=false;
+      box.classList.add("wrong");
+      setTimeout(()=>box.classList.remove("wrong"),600);
+    } else {
+      box.classList.add("correct");
+      setTimeout(()=>box.classList.remove("correct"),600);
+    }
+  });
+  feedback.textContent = correct ? "🎉 Benar! Urutan wudhu tepat!" : "❌ Salah! Coba lagi.";
+  feedback.style.color = correct ? "#00796b":"#d32f2f";
+});
+
+// Back button
+document.getElementById("backBtn").addEventListener("click", ()=>window.history.back());
+
+initGame();
+</script>
+</body>
+</html>

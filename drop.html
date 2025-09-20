@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentence Builder Bahasa Arab</title>
+<style>
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8, #d0ebff);
+  margin: 0;
+  text-align: center;
+}
+
+header {
+  background: linear-gradient(90deg,#007bff,#00c6ff);
+  color:white;
+  font-size:1.5em;
+  padding:16px;
+  font-weight:bold;
+  box-shadow:0 4px 8px rgba(0,0,0,0.15);
+}
+
+.container {
+  max-width:800px;
+  margin:20px auto;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.1);
+}
+
+.level-btn {
+  margin:5px;
+  padding:10px 20px;
+  font-weight:bold;
+  border:none;
+  border-radius:25px;
+  background:#ffc107;
+  cursor:pointer;
+}
+.level-btn:hover { background:#e0a800; }
+
+.word-bank, .drop-area {
+  display:flex;
+  flex-wrap: wrap;
+  gap:10px;
+  justify-content:center;
+  margin:15px 0;
+}
+
+.word, .drop-slot {
+  padding:12px 18px;
+  background:#007bff;
+  color:white;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  min-width:60px;
+  text-align:center;
+  user-select:none;
+}
+
+.word:hover { background:#0056b3; }
+
+.drop-slot {
+  background:#dee2e6;
+  color:#333;
+}
+
+button#check-btn {
+  margin-top:15px;
+  padding:10px 20px;
+  font-weight:bold;
+  border:none;
+  border-radius:25px;
+  background:#28a745;
+  color:white;
+  cursor:pointer;
+}
+button#check-btn:hover { background:#218838; }
+
+#result {
+  margin-top:12px;
+  font-weight:bold;
+  font-size:1.2em;
+  min-height:24px;
+}
+
+.back-link {
+  display:inline-block;
+  margin-top:20px;
+  text-decoration:none;
+  color:white;
+  background:#007bff;
+  padding:12px 24px;
+  border-radius:30px;
+  font-weight:bold;
+  transition:0.3s;
+}
+.back-link:hover { background:#0056b3; }
+
+@media (max-width:600px){
+  .word, .drop-slot { min-width:50px; padding:10px; font-size:0.9em; }
+}
+</style>
+</head>
+<body>
+
+<header>🎮 Drag & Drop Sentence Builder — Bahasa Arab</header>
+
+<div class="container">
+  <h2>Pilih Level:</h2>
+  <button class="level-btn" onclick="startGame('easy')">Mudah</button>
+  <button class="level-btn" onclick="startGame('medium')">Sedang</button>
+  <button class="level-btn" onclick="startGame('hard')">Sulit</button>
+
+  <div class="word-bank" id="wordBank"></div>
+  <div class="drop-area" id="dropArea"></div>
+
+  <button id="check-btn" onclick="checkSentence()">✅ Cek Jawaban</button>
+  <div id="result"></div>
+  <a href="arabic_game.html" class="back-link">⬅ Kembali ke Menu Game</a>
+</div>
+
+<script>
+// Daftar kalimat per level
+const levels = {
+  easy:[
+    {sentence:["أنا","طالب"], words:["طالب","أنا"]},
+    {sentence:["هو","معلم"], words:["معلم","هو"]}
+  ],
+  medium:[
+    {sentence:["أنا","أحب","الكتاب"], words:["الكتاب","أحب","أنا"]},
+    {sentence:["هي","تقرأ","الدرس"], words:["تقرأ","هي","الدرس"]}
+  ],
+  hard:[
+    {sentence:["الولد","يكتب","الرسالة","الجميلة"], words:["الجميلة","الولد","يكتب","الرسالة"]},
+    {sentence:["المدرسة","تستقبل","الطلاب","بابتسامة"], words:["تستقبل","المدرسة","بابتسامة","الطلاب"]}
+  ]
+};
+
+let currentLevel = null;
+let currentSentence = [];
+let currentWords = [];
+
+function shuffle(array){ return array.sort(()=>Math.random()-0.5); }
+
+function startGame(level){
+  currentLevel = level;
+  nextSentence();
+}
+
+function renderWords(){
+  const bank = document.getElementById("wordBank");
+  bank.innerHTML = "";
+  currentWords.forEach(w=>{
+    const div = document.createElement("div");
+    div.className="word";
+    div.innerText=w;
+    div.draggable=true;
+    div.ondragstart = e=>{ e.dataTransfer.setData("text",w); };
+    bank.appendChild(div);
+  });
+}
+
+function renderDropSlots(){
+  const drop = document.getElementById("dropArea");
+  drop.innerHTML = "";
+  currentSentence.forEach(()=> {
+    const div = document.createElement("div");
+    div.className="drop-slot";
+    div.ondragover = e=> e.preventDefault();
+    div.ondrop = e=>{
+      const word = e.dataTransfer.getData("text");
+      e.target.innerText = word;
+    };
+    drop.appendChild(div);
+  });
+}
+
+function nextSentence(){
+  document.getElementById("result").innerText="";
+  const data = levels[currentLevel][Math.floor(Math.random()*levels[currentLevel].length)];
+  currentSentence = data.sentence;
+  currentWords = shuffle(data.words.slice());
+  renderWords();
+  renderDropSlots();
+}
+
+function checkSentence(){
+  const slots = document.querySelectorAll(".drop-slot");
+  let answer = [];
+  slots.forEach(s=> answer.push(s.innerText));
+  if(answer.join(" ") === currentSentence.join(" ")){
+    document.getElementById("result").innerText="✅ Benar! 🎉";
+    setTimeout(nextSentence,1000);
+  } else {
+    document.getElementById("result").innerText="❌ Salah, coba lagi!";
+  }
+}
+</script>
+
+</body>
+</html>

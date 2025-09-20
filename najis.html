@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag & Drop Najis</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg,#f0f8ff,#e0f7fa);
+    text-align: center;
+    padding: 20px;
+  }
+
+  h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  .emoji-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+
+  .emoji {
+    font-size: 3rem;
+    cursor: grab;
+    transition: transform 0.2s, filter 0.3s;
+  }
+
+  .emoji:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.3));
+  }
+
+  .emoji:active {
+    cursor: grabbing;
+  }
+
+  .dropzone {
+    display: inline-block;
+    width: 150px;
+    min-height: 150px;
+    margin: 10px;
+    background: #fff;
+    border: 3px dashed #007bff;
+    border-radius: 12px;
+    position: relative;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .dropzone h2 {
+    margin-top: 10px;
+    color: #007bff;
+  }
+
+  .dropzone.hover {
+    background: #e0f7fa;
+    border-color: #00bcd4;
+  }
+
+  .feedback {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    min-height: 1.5em;
+  }
+
+  button {
+    margin: 10px 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    background: #ff7f50;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button:hover { background: #ff6347; }
+
+  .back { background: #607d8b; }
+  .back:hover { background: #455a64; }
+
+  @media(max-width:768px){
+    .emoji { font-size: 2.5rem; }
+    .dropzone { width: 120px; min-height: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🕌 Drag & Drop: Najis atau Thahir 🕌</h1>
+
+<div class="emoji-container" id="emojiContainer"></div>
+
+<div>
+  <div class="dropzone" id="najisDrop">
+    <h2>Najis</h2>
+  </div>
+  <div class="dropzone" id="thahirDrop">
+    <h2>Thahir</h2>
+  </div>
+</div>
+
+<p id="feedback" class="feedback"></p>
+
+<div>
+  <button id="resetBtn">🔄 Reset Soal</button>
+  <button id="backBtn" class="back">⬅ Kembali</button>
+</div>
+
+<script>
+  const questions = [
+    [
+      {emoji:"🐄", category:"thahir"},
+      {emoji:"💩", category:"najis"},
+      {emoji:"🧴", category:"thahir"},
+      {emoji:"🐖", category:"najis"}
+    ],
+    [
+      {emoji:"🥛", category:"thahir"},
+      {emoji:"🩸", category:"najis"},
+      {emoji:"🍞", category:"thahir"},
+      {emoji:"💩", category:"najis"}
+    ],
+    [
+      {emoji:"🧼", category:"thahir"},
+      {emoji:"🐓", category:"thahir"},
+      {emoji:"🗑️", category:"najis"},
+      {emoji:"🐑", category:"thahir"}
+    ]
+  ];
+
+  let currentQuestion = 0;
+  let placedCount = 0;
+
+  const emojiContainer = document.getElementById("emojiContainer");
+  const najisDrop = document.getElementById("najisDrop");
+  const thahirDrop = document.getElementById("thahirDrop");
+  const feedback = document.getElementById("feedback");
+
+  function shuffle(array){
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  function loadQuestion(){
+    placedCount = 0;
+    feedback.textContent = "";
+    emojiContainer.innerHTML = "";
+    const currentEmojis = shuffle(questions[currentQuestion].slice());
+    currentEmojis.forEach((item,index)=>{
+      const span = document.createElement("span");
+      span.className="emoji";
+      span.textContent=item.emoji;
+      span.draggable=true;
+      span.dataset.category=item.category;
+      span.dataset.index=index;
+      span.addEventListener("dragstart", dragStart);
+      emojiContainer.appendChild(span);
+    });
+  }
+
+  function dragStart(e){
+    e.dataTransfer.setData("text/plain", e.target.dataset.index);
+  }
+
+  function allowDrop(e){
+    e.preventDefault();
+    e.currentTarget.classList.add("hover");
+  }
+
+  function leaveDrop(e){
+    e.currentTarget.classList.remove("hover");
+  }
+
+  function drop(e){
+    e.preventDefault();
+    e.currentTarget.classList.remove("hover");
+    const index = e.dataTransfer.getData("text/plain");
+    const emoji = document.querySelector(`.emoji[data-index='${index}']`);
+    const targetCategory = e.currentTarget.id === "najisDrop" ? "najis" : "thahir";
+
+    if(emoji.dataset.category === targetCategory){
+      feedback.textContent = "✅ Benar!";
+      feedback.style.color = "#00c853";
+      e.currentTarget.appendChild(emoji);
+      placedCount++;
+      if(placedCount === questions[currentQuestion].length){
+        setTimeout(()=>{
+          currentQuestion = (currentQuestion+1)%questions.length;
+          loadQuestion();
+        },800);
+      }
+    } else {
+      feedback.textContent = "❌ Salah! Coba lagi.";
+      feedback.style.color = "#ff3d00";
+    }
+  }
+
+  najisDrop.addEventListener("dragover", allowDrop);
+  najisDrop.addEventListener("dragleave", leaveDrop);
+  najisDrop.addEventListener("drop", drop);
+
+  thahirDrop.addEventListener("dragover", allowDrop);
+  thahirDrop.addEventListener("dragleave", leaveDrop);
+  thahirDrop.addEventListener("drop", drop);
+
+  document.getElementById("resetBtn").addEventListener("click", loadQuestion);
+  document.getElementById("backBtn").addEventListener("click", ()=>{ window.history.back(); });
+
+  // Initialize
+  loadQuestion();
+</script>
+</body>
+</html>
